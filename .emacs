@@ -3,6 +3,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(delete-selection-mode t)
  '(indent-tabs-mode nil)
  '(mouse-wheel-progressive-speed nil)
  '(show-paren-mode t)
@@ -32,6 +33,9 @@
 					(lambda () 
 						(slime-redirect-inferior-output)))
 
+;; f4 kill-buffer
+(global-set-key [f4] (lambda()(interactive)(kill-buffer nil)))
+
 ;; colors
 (set-cursor-color "gray75")
 (set-foreground-color "white")
@@ -59,6 +63,7 @@
 (global-set-key [drag-mouse-4] 'previous-buffer)
 (global-set-key [drag-mouse-5] 'next-buffer)
 (global-set-key [C-tab]        'bury-buffer)
+(global-set-key (kbd "C-SPC")  'slime-complete-symbol)
 
 (require 'erc)
 (global-set-key [f11] (lambda()(interactive)(erc :server "irc.freenode.net" :port 6667 :nick "_hrrld" :full-name "Harold")))
