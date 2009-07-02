@@ -59,3 +59,6 @@
 (global-set-key [drag-mouse-4] 'previous-buffer)
 (global-set-key [drag-mouse-5] 'next-buffer)
 (global-set-key [C-tab]        'bury-buffer)
+
+(require 'erc)
+(global-set-key [f11] (lambda()(interactive)(erc :server "irc.freenode.net" :port 6667 :nick "_hrrld" :full-name "Harold")))
