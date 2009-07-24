@@ -7,6 +7,7 @@
  '(indent-tabs-mode nil)
  '(mouse-wheel-progressive-speed nil)
  '(show-paren-mode t)
+ '(show-trailing-whitespace t)
  '(tab-width 2))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
@@ -28,10 +29,10 @@
  (other-window 1)
  (slime))
 
-(add-hook 'clojure-mode-hook 
+(add-hook 'clojure-mode-hook
           '(lambda () (define-key clojure-mode-map [f5] 'my-go-slime)))
-                                
-(add-hook 'slime-connected-hook 
+
+(add-hook 'slime-connected-hook
 					(lambda () (slime-redirect-inferior-output)))
 
 ;; Ruby
@@ -40,7 +41,7 @@
  (save-buffer)
  (shell-command (concat "ruby \"" (buffer-file-name (nth 0 (buffer-list))) "\"")))
 
-(add-hook 'ruby-mode-hook 
+(add-hook 'ruby-mode-hook
           '(lambda () (define-key ruby-mode-map [f5] 'ruby-run)))
 
 ;(global-set-key [C-f5] 'ruby-run)
@@ -59,6 +60,10 @@
 (set-background-color "gray5")
 (set-face-background 'region "coral4")
 
+(defface hl-line '((t (:background "gray15"))) "" :group 'hl-line) ; highlight the current line
+(setq hl-line-face 'hl-line)
+(global-hl-line-mode t)
+
 ;; Meta
 (global-set-key (kbd "<f12>") ; make F12 switch to .emacs; create if needed
   (lambda()(interactive)(find-file "~/.emacs")))
@@ -75,4 +80,4 @@
 (global-set-key [f11] (lambda()(interactive)(erc :server "irc.freenode.net" :port 6667 :nick "_hrrld" :full-name "Harold")))
 
 ;; clj-wars
-(global-set-key [f6] (lambda()(interactive)(shell-command "putty -load \"clj-wars\"")))
+(global-set-key [f6] (lambda()(interactive)(shell-command "putty -load \"clj-wars\"&")))
