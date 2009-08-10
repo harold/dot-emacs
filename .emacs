@@ -27,6 +27,9 @@
  (interactive)
  (split-window-horizontally)
  (other-window 1)
+ (add-to-list 'swank-clojure-extra-classpaths ".")
+ (setq slime-lisp-implementations '())
+ (add-to-list 'slime-lisp-implementations `(clojure ,(swank-clojure-cmd) :init swank-clojure-init) t)
  (slime))
 
 (add-hook 'clojure-mode-hook
