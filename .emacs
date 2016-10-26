@@ -4,7 +4,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-(defvar my-packages '(zenburn-theme neotree cider rainbow-delimiters smartparens))
+(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
         (package-install p)))
@@ -38,6 +38,11 @@
 (windmove-default-keybindings 'meta)
 
 
+;; my grep
+(defun grep-under-cursor ()
+  (interactive)
+  (rgrep (grep-tag-default) "*.clj*" "~/src"))
+
 ;; keys
 (global-set-key (kbd "<select>") 'move-end-of-line) ;; is this the real life?
 (global-set-key (kbd "C-w") 'kill-this-buffer)
@@ -55,6 +60,7 @@
 (global-set-key (kbd "C-x |") 'split-window-right)
 (global-set-key (kbd "M-<insert>") 'yank-pop)
 (global-unset-key (kbd "C-z"))
+(global-set-key (kbd "<f7>") 'grep-under-cursor)
 
 
 ;; smartparens mode
@@ -63,14 +69,31 @@
 (global-set-key (kbd "M-]") 'sp-forward-slurp-sexp)
 (global-set-key (kbd "M-{") 'sp-backward-slurp-sexp)
 (global-set-key (kbd "M-}") 'sp-backward-barf-sexp)
+(add-hook 'smartparens-mode-hook (lambda () (sp-pair "'" nil :actions :rem)))
 
+;; d/q template
+(defun d-slash-q-template ()
+  (interactive)
+  (insert "(d/q '[:find ] (d/db model/*db-conn*))")
+  (backward-char 25))
 
 ;; cider
+(setq cider-repl-display-help-banner nil)
 (setq cider-auto-select-error-buffer nil)
 (setq cider-prompt-save-file-on-load 'always-save)
 (setq cider-repl-display-in-current-window t)
+(setq cider-repl-use-pretty-printing t)
+(setq cider-pprint-fn 'puget)
 (setq same-window-regexps '("\*cider-repl.*"))
-
+(add-hook 'cider-repl-mode-hook #'eldoc-mode)
+(add-hook 'cider-mode-hook #'eldoc-mode)
+(add-hook 'cider-repl-mode-hook #'company-mode)
+(add-hook 'cider-mode-hook #'company-mode)
+(setq nrepl-log-messages nil)
+(global-set-key (kbd "<f5>") 'cider-toggle-trace-var)
+(global-set-key (kbd "<f6>") 'd-slash-q-template)
+(global-set-key (kbd "C-M-j") 'cider-jack-in)
+(global-set-key (kbd "C-M-S-t") 'cider-test-run-ns-tests)
 
 ;; neotree
 (require 'neotree)
@@ -98,14 +121,16 @@
 				      "target/cljsbuild-compiler-1"
 				      "target/cljsbuild-compiler-2"
 				      "s3cache"
-				      "macosx"))
+				      "macosx"
+				      "out-dc"))
 
 (eval-after-load "grep"
   '(progn
      (add-to-list 'grep-find-ignored-files "*.jar")
      (add-to-list 'grep-find-ignored-files "*.dylib")
      (add-to-list 'grep-find-ignored-files "db-backup.tar.gz")
-     (add-to-list 'grep-find-ignored-files "figwheel_server.log")))
+     (add-to-list 'grep-find-ignored-files "figwheel_server.log")
+     (add-to-list 'grep-find-ignored-files "site.min.css")))
 
 
 ;; fancy
@@ -162,7 +187,9 @@
 
 ;; font?
 (ignore-errors
-  (set-frame-font "-unknown-Ubuntu Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1"))
+  (set-frame-font "-unknown-Ubuntu Mono-normal-normal-normal-*-21-*-*-*-m-0-iso10646-1"))
+
+;; confusing commands
 (put 'erase-buffer 'disabled nil)
 
 ;; ace-jump-mode
@@ -174,3 +201,15 @@
   t)
 ;; you can select the key you prefer to
 (define-key global-map (kbd "C-f") 'ace-jump-mode)
+
+;; pop buffers here
+(defun pop-buffers-here ()
+  (interactive)
+  (walk-windows
+   (lambda (win)
+     (set-window-dedicated-p win "yay")))
+  (set-window-dedicated-p (selected-window) nil)
+  (message "New buffers will be popped here."))
+
+(global-set-key (kbd "C-x C-p") 'pop-buffers-here)
+(put 'upcase-region 'disabled nil)
