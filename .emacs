@@ -4,7 +4,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens))
+(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens ace-jump-mode ag undo-tree))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
         (package-install p)))
@@ -50,7 +50,8 @@
 (global-set-key (kbd "C-M-w") 'bury-buffer)
 (global-set-key (kbd "C-M-S-w") 'unbury-buffer)
 (global-set-key (kbd "<backtab>") 'indent-sexp)
-(global-set-key [f8] 'compilation-next-error)
+(global-set-key (kbd "<S-f8>") 'previous-error)
+(global-set-key [f8] 'next-error)
 (global-set-key (kbd "<M-delete>") 'backward-kill-word)
 (global-set-key (kbd "M-p") 'scroll-down-line)
 (global-set-key (kbd "M-n") 'scroll-up-line)
@@ -65,6 +66,7 @@
 
 ;; smartparens mode
 (add-hook 'prog-mode-hook 'smartparens-mode)
+(require 'smartparens-clojure)
 (global-set-key (kbd "M-[") 'sp-forward-barf-sexp)
 (global-set-key (kbd "M-]") 'sp-forward-slurp-sexp)
 (global-set-key (kbd "M-{") 'sp-backward-slurp-sexp)
@@ -193,13 +195,6 @@
 (put 'erase-buffer 'disabled nil)
 
 ;; ace-jump-mode
-(add-to-list 'load-path "~/local-elisp/")
-(autoload
-  'ace-jump-mode
-  "ace-jump-mode"
-  "Emacs quick move minor mode"
-  t)
-;; you can select the key you prefer to
 (define-key global-map (kbd "C-f") 'ace-jump-mode)
 
 ;; pop buffers here
@@ -213,3 +208,14 @@
 
 (global-set-key (kbd "C-x C-p") 'pop-buffers-here)
 (put 'upcase-region 'disabled nil)
+
+;; find file wildcards
+(setq find-file-wildcards t)
+
+;; ag
+(setq ag-highlight-search t)
+(setq ag-reuse-buffers t)
+
+;; undo-tree
+(global-undo-tree-mode)
+(global-set-key (kbd "C-M-/") 'undo-tree-visualize)
