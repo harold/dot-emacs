@@ -4,7 +4,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens ace-jump-mode ag undo-tree))
+(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens ace-jump-mode ag undo-tree fiplr visual-regexp))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
         (package-install p)))
@@ -93,7 +93,6 @@
 (add-hook 'cider-mode-hook #'company-mode)
 (setq nrepl-log-messages nil)
 (global-set-key (kbd "<f5>") 'cider-toggle-trace-var)
-(global-set-key (kbd "<f6>") 'd-slash-q-template)
 (global-set-key (kbd "C-M-j") 'cider-jack-in)
 (global-set-key (kbd "C-M-S-t") 'cider-test-run-ns-tests)
 
@@ -219,3 +218,24 @@
 ;; undo-tree
 (global-undo-tree-mode)
 (global-set-key (kbd "C-M-/") 'undo-tree-visualize)
+
+;; ansi-term
+(defun visit-ansi-term ()
+  "Create or visit an `ansi-term' buffer."
+  (interactive)
+  (if (not (get-buffer "*ansi-term*"))
+      (ansi-term "/bin/bash")
+    (switch-to-buffer "*ansi-term*")))
+
+(global-set-key (kbd "<f12>") 'visit-ansi-term)
+
+(add-hook 'term-mode-hook
+          (lambda ()
+            (setq term-buffer-maximum-size 0)))
+
+;; fiplr
+(global-set-key (kbd "<f6>") 'fiplr-find-file)
+(global-set-key (kbd "C-p") 'fiplr-find-file)
+
+;; visual-regexp
+(global-set-key (kbd "C-%") 'vr/query-replace)
