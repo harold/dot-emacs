@@ -29,7 +29,9 @@
 (show-paren-mode 1)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq scroll-error-top-bottom t)
+(setq scroll-preserve-screen-position t)
 (setq make-backup-files nil)
+(setq mouse-yank-at-point t)
 (setq split-height-threshold nil
       split-width-threshold nil) ;; insanity?
 
@@ -42,6 +44,7 @@
 (defun grep-under-cursor ()
   (interactive)
   (rgrep (grep-tag-default) "*.clj*" "~/src"))
+
 
 ;; keys
 (global-set-key (kbd "<select>") 'move-end-of-line) ;; is this the real life?
@@ -66,11 +69,13 @@
 
 ;; smartparens mode
 (add-hook 'prog-mode-hook 'smartparens-mode)
-(require 'smartparens-clojure)
 (global-set-key (kbd "M-[") 'sp-forward-barf-sexp)
 (global-set-key (kbd "M-]") 'sp-forward-slurp-sexp)
 (global-set-key (kbd "M-{") 'sp-backward-slurp-sexp)
 (global-set-key (kbd "M-}") 'sp-backward-barf-sexp)
+(global-set-key (kbd "C-S-<up>") 'sp-absorb-sexp)
+(global-set-key (kbd "C-S-<down>") 'sp-emit-sexp)
+(global-set-key (kbd "C-M-<up>") 'sp-backward-up-sexp)
 (add-hook 'smartparens-mode-hook (lambda () (sp-pair "'" nil :actions :rem)))
 
 ;; d/q template
@@ -91,10 +96,14 @@
 (add-hook 'cider-mode-hook #'eldoc-mode)
 (add-hook 'cider-repl-mode-hook #'company-mode)
 (add-hook 'cider-mode-hook #'company-mode)
-(setq nrepl-log-messages nil)
+;;(setq nrepl-log-messages nil)
 (global-set-key (kbd "<f5>") 'cider-toggle-trace-var)
 (global-set-key (kbd "C-M-j") 'cider-jack-in)
 (global-set-key (kbd "C-M-S-t") 'cider-test-run-ns-tests)
+(global-set-key (kbd "<f6>") 'cider-test-run-test)
+(global-set-key (kbd "S-<f6>") 'cider-test-run-project-tests)
+(global-unset-key (kbd "C-c C-k"))
+(global-set-key (kbd "C-c C-c") 'cider-load-buffer)
 
 ;; neotree
 (require 'neotree)
@@ -188,7 +197,7 @@
 
 ;; font?
 (ignore-errors
-  (set-frame-font "-unknown-Ubuntu Mono-normal-normal-normal-*-21-*-*-*-m-0-iso10646-1"))
+  (set-default-font "Ubuntu Mono 14"))
 
 ;; confusing commands
 (put 'erase-buffer 'disabled nil)
@@ -214,6 +223,7 @@
 ;; ag
 (setq ag-highlight-search t)
 (setq ag-reuse-buffers t)
+(setq ag-ignore-list '("target/cljsbuild" "public/js" "*.ipynb" "postgres-data"))
 
 ;; undo-tree
 (global-undo-tree-mode)
@@ -234,8 +244,20 @@
             (setq term-buffer-maximum-size 0)))
 
 ;; fiplr
-(global-set-key (kbd "<f6>") 'fiplr-find-file)
 (global-set-key (kbd "C-p") 'fiplr-find-file)
 
 ;; visual-regexp
 (global-set-key (kbd "C-%") 'vr/query-replace)
+
+;; fill-column
+(setq-default fill-column 80)
+
+;; hi-lock
+(global-set-key (kbd "C-d") 'highlight-symbol-at-point)
+(global-set-key (kbd "C-M-d") (lambda ()
+				(interactive)
+				(unhighlight-regexp t)))
+
+;; auto-save
+(setq auto-save-file-name-transforms
+      `((".*" ,(concat user-emacs-directory "backups/") t)))
