@@ -34,6 +34,7 @@
 (setq mouse-yank-at-point t)
 (setq split-height-threshold nil
       split-width-threshold nil) ;; insanity?
+(setq create-lockfiles nil)
 
 
 ;; windmove
@@ -197,7 +198,7 @@
 
 ;; font?
 (ignore-errors
-  (set-default-font "Ubuntu Mono 14"))
+  (set-default-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
 
 ;; confusing commands
 (put 'erase-buffer 'disabled nil)
