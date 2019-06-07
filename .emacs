@@ -4,7 +4,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens ace-jump-mode ag undo-tree fiplr visual-regexp))
+(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens ace-jump-mode ag undo-tree fiplr visual-regexp flycheck-joker))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
         (package-install p)))
@@ -91,7 +91,7 @@
 (setq cider-prompt-save-file-on-load 'always-save)
 (setq cider-repl-display-in-current-window t)
 (setq cider-repl-use-pretty-printing t)
-(setq cider-pprint-fn 'puget)
+(setq cider-print-fn 'puget)
 (setq same-window-regexps '("\*cider-repl.*"))
 (add-hook 'cider-repl-mode-hook #'eldoc-mode)
 (add-hook 'cider-mode-hook #'eldoc-mode)
@@ -259,6 +259,20 @@
 				(interactive)
 				(unhighlight-regexp t)))
 
+;; js
+(defun my-js-mode-hook ()
+  "Custom `js-mode' behaviours."
+  (setq indent-tabs-mode nil))
+
+(add-hook 'js-mode-hook 'my-js-mode-hook)
+
+(setq js-indent-level 2)
+
 ;; auto-save
 (setq auto-save-file-name-transforms
       `((".*" ,(concat user-emacs-directory "backups/") t)))
+
+
+;; flycheck
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(require 'flycheck-joker)
