@@ -100,6 +100,7 @@
 ;;(setq nrepl-log-messages nil)
 (global-set-key (kbd "<f5>") 'cider-toggle-trace-var)
 (global-set-key (kbd "C-M-j") 'cider-jack-in)
+(global-set-key (kbd "C-M-S-J") 'cider-jack-in-cljs)
 (global-set-key (kbd "C-M-S-t") 'cider-test-run-ns-tests)
 (global-set-key (kbd "<f6>") 'cider-test-run-test)
 (global-set-key (kbd "S-<f6>") 'cider-test-run-project-tests)
