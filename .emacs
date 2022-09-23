@@ -66,6 +66,7 @@
 (global-set-key (kbd "M-<insert>") 'yank-pop)
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<f7>") 'grep-under-cursor)
+(global-set-key (kbd "C-j") 'join-line)
 
 
 ;; smartparens mode
