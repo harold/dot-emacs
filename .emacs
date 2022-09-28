@@ -231,6 +231,7 @@
 ;; undo-tree
 (global-undo-tree-mode)
 (global-set-key (kbd "C-M-/") 'undo-tree-visualize)
+(setq undo-tree-auto-save-history nil)
 
 ;; ansi-term
 (defun visit-ansi-term ()
