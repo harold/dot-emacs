@@ -4,7 +4,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-(defvar my-packages '(zenburn-theme neotree cider company rainbow-delimiters smartparens ace-jump-mode ag undo-tree fiplr visual-regexp flycheck-joker))
+(defvar my-packages '(zenburn-theme neotree cider company ivy rainbow-delimiters smartparens ace-jump-mode ag undo-tree visual-regexp flycheck-joker projectile))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
         (package-install p)))
@@ -21,7 +21,8 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (winner-mode 1)
-
+(when (daemonp)
+  (exec-path-from-shell-initialize))
 
 ;; sanity
 (delete-selection-mode 1)
@@ -36,6 +37,17 @@
       split-width-threshold nil) ;; insanity?
 (setq create-lockfiles nil)
 
+(ivy-mode)
+(setq ivy-use-virtual-buffers t)
+(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
+(setq projectile-completion-system 'ivy)
+
+(global-set-key (kbd "C-M-p") 'projectile-switch-project)
+(global-set-key (kbd "C-p") 'projectile-find-file)
+(global-set-key (kbd "M-f") 'projectile-ag)
 
 ;; windmove
 (windmove-default-keybindings 'meta)
@@ -60,7 +72,6 @@
 (global-set-key (kbd "M-p") 'scroll-down-line)
 (global-set-key (kbd "M-n") 'scroll-up-line)
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-x f") 'ido-find-file)
 (global-set-key (kbd "C-x -") 'split-window-below)
 (global-set-key (kbd "C-x |") 'split-window-right)
 (global-set-key (kbd "M-<insert>") 'yank-pop)
@@ -75,8 +86,6 @@
 (global-set-key (kbd "M-]") 'sp-forward-slurp-sexp)
 (global-set-key (kbd "M-{") 'sp-backward-slurp-sexp)
 (global-set-key (kbd "M-}") 'sp-backward-barf-sexp)
-(global-set-key (kbd "C-S-<up>") 'sp-absorb-sexp)
-(global-set-key (kbd "C-S-<down>") 'sp-emit-sexp)
 (global-set-key (kbd "C-M-<up>") 'sp-backward-up-sexp)
 (add-hook 'smartparens-mode-hook (lambda () (sp-pair "'" nil :actions :rem)))
 
@@ -91,8 +100,8 @@
 (setq cider-auto-select-error-buffer nil)
 (setq cider-prompt-save-file-on-load 'always-save)
 (setq cider-repl-display-in-current-window t)
-(setq cider-repl-use-pretty-printing t)
-(setq cider-print-fn 'puget)
+;;(setq cider-repl-use-pretty-printing t)
+;;(setq cider-print-fn 'puget)
 (setq same-window-regexps '("\*cider-repl.*"))
 (add-hook 'cider-repl-mode-hook #'eldoc-mode)
 (add-hook 'cider-mode-hook #'eldoc-mode)
@@ -107,6 +116,11 @@
 (global-set-key (kbd "S-<f6>") 'cider-test-run-project-tests)
 (global-unset-key (kbd "C-c C-k"))
 (global-set-key (kbd "C-c C-c") 'cider-load-buffer)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Wild doc-fun attempt
+(setq cider-apropos-actions '(("display-doc" . cider-doc-lookup)))
+(global-set-key (kbd "M-d") '(lambda () (interactive) (cider-apropos-select ".")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; neotree
 (require 'neotree)
@@ -246,9 +260,6 @@
 (add-hook 'term-mode-hook
           (lambda ()
             (setq term-buffer-maximum-size 0)))
-
-;; fiplr
-(global-set-key (kbd "C-p") 'fiplr-find-file)
 
 ;; visual-regexp
 (global-set-key (kbd "C-%") 'vr/query-replace)
